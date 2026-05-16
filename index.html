@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <title>QuizMaster — Web Dev</title>
+  <link rel="icon" type="image/png" href="favicon.png?v=1">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --bg:       #0A0A0F;
+      --surface:  #111118;
+      --card:     #18181F;
+      --border:   #26262E;
+      --border2:  #32323C;
+      --text:     #F0F0F5;
+      --muted:    #6B6B7A;
+      --accent:   #F97316;
+      --accent2:  #FB923C;
+      --green:    #22C55E;
+      --cyan:     #22D3EE;
+      --red:      #EF4444;
+      --yellow:   #EAB308;
+      --r:        14px;
+      --rs:       10px;
+    }
+    *,*::before,*::after{margin:0;padding:0;box-sizing:border-box;}
+    body{
+      font-family:'Outfit',sans-serif;
+      background:var(--bg);color:var(--text);
+      min-height:100vh;padding:14px 14px 36px;
+    }
+    body::before{
+      content:'';position:fixed;inset:0;
+      background-image:
+        linear-gradient(rgba(249,115,22,.03) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(249,115,22,.03) 1px,transparent 1px);
+      background-size:40px 40px;
+      pointer-events:none;z-index:0;
+    }
+    .wrap{max-width:620px;margin:0 auto;position:relative;z-index:1;}
+
+    /* ── TOP BAR ── */
+    .topbar{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
+    .logo-mark{
+      width:34px;height:34px;background:var(--accent);border-radius:9px;
+      display:flex;align-items:center;justify-content:center;
+      font-size:15px;color:#fff;flex-shrink:0;
+    }
+    .logo-text{font-size:17px;font-weight:800;letter-spacing:-.4px;}
+    .logo-text span{color:var(--accent);}
+
+    /* ── INTRO ── */
+    #introPage{animation:fup .45s ease both;}
+    .intro-card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);padding:30px 20px 24px;text-align:center;
+      position:relative;overflow:hidden;
+    }
+    .intro-card::before{
+      content:'';position:absolute;top:-80px;left:50%;transform:translateX(-50%);
+      width:260px;height:260px;
+      background:radial-gradient(circle,rgba(249,115,22,.12) 0%,transparent 70%);
+      pointer-events:none;
+    }
+    .hero-ic{
+      width:68px;height:68px;
+      background:linear-gradient(135deg,var(--accent),#EC4899);
+      border-radius:18px;display:flex;align-items:center;justify-content:center;
+      margin:0 auto 18px;font-size:28px;color:#fff;
+      box-shadow:0 8px 28px rgba(249,115,22,.3);
+    }
+    .intro-card h1{font-size:clamp(22px,6vw,32px);font-weight:900;letter-spacing:-.8px;margin-bottom:5px;}
+    .intro-card h1 em{font-style:normal;color:var(--accent);}
+    .intro-sub{color:var(--muted);font-size:13px;margin-bottom:24px;}
+
+    .info-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:22px;}
+    .info-box{
+      background:var(--surface);border:1px solid var(--border);
+      border-radius:var(--rs);padding:13px 8px;text-align:center;
+    }
+    .info-box .val{font-size:26px;font-weight:900;color:var(--accent);font-family:'JetBrains Mono',monospace;line-height:1;}
+    .info-box .lbl{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:3px;}
+
+    .tags{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:24px;}
+    .tag{
+      background:rgba(249,115,22,.1);border:1px solid rgba(249,115,22,.2);
+      color:var(--accent2);padding:5px 12px;border-radius:30px;font-size:12px;font-weight:600;
+    }
+
+    .btn-start{
+      width:100%;padding:14px;background:var(--accent);color:#fff;border:none;
+      border-radius:var(--rs);font-family:'Outfit',sans-serif;font-size:15px;font-weight:800;
+      cursor:pointer;letter-spacing:-.2px;
+      display:flex;align-items:center;justify-content:center;gap:9px;
+      transition:all .2s;box-shadow:0 4px 20px rgba(249,115,22,.35);
+    }
+    .btn-start:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 8px 28px rgba(249,115,22,.45);}
+    .intro-note{text-align:center;font-size:11px;color:var(--muted);margin-top:12px;}
+
+    /* ── QUIZ WRAP ── */
+    .quiz-wrap{display:none;}
+    .quiz-wrap.on{display:block;animation:fup .4s ease both;}
+
+    /* ── STATS ROW ── */
+    .stats-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:10px;}
+    .s-box{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--rs);
+      padding:10px 11px;display:flex;align-items:center;gap:9px;
+    }
+    .s-ic{
+      width:30px;height:30px;border-radius:7px;
+      display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;
+    }
+    .s-ic.g{background:rgba(34,197,94,.12);color:var(--green);}
+    .s-ic.y{background:rgba(234,179,8,.12);color:var(--yellow);}
+    .s-ic.r{background:rgba(239,68,68,.12);color:var(--red);}
+    .s-val{font-size:19px;font-weight:800;font-family:'JetBrains Mono',monospace;line-height:1.1;}
+    .s-lbl{font-size:9px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:1px;}
+    .s-box.tbox{border-color:rgba(239,68,68,.25);}
+    .s-box.tbox .s-val{color:var(--red);}
+    .tpulse{animation:tp .8s ease-in-out infinite;}
+    @keyframes tp{
+      0%,100%{border-color:rgba(239,68,68,.25);background:var(--card);}
+      50%{border-color:rgba(239,68,68,.7);background:rgba(239,68,68,.07);}
+    }
+
+    /* Progress */
+    .prog-row{
+      background:var(--card);border:1px solid var(--border);border-radius:var(--rs);
+      padding:9px 13px;margin-bottom:10px;
+      display:flex;align-items:center;gap:11px;
+    }
+    .prog-lbl{font-size:11px;font-weight:700;color:var(--muted);white-space:nowrap;}
+    .prog-track{flex:1;height:6px;background:var(--border2);border-radius:99px;overflow:hidden;}
+    .prog-fill{
+      height:100%;width:0%;
+      background:linear-gradient(90deg,var(--accent),#EC4899);
+      border-radius:99px;transition:width .4s cubic-bezier(.4,0,.2,1);
+    }
+    .prog-pct{font-size:12px;font-weight:700;color:var(--accent);font-family:'JetBrains Mono',monospace;white-space:nowrap;}
+
+    /* ── QUESTION CARD ── */
+    .q-card{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);overflow:hidden;margin-bottom:10px;
+    }
+    .q-head{
+      padding:11px 15px;border-bottom:1px solid var(--border);
+      display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;
+    }
+    .q-num{font-size:12px;font-weight:700;font-family:'JetBrains Mono',monospace;color:var(--muted);}
+    .q-num strong{color:var(--accent);font-size:14px;}
+    .q-badge{
+      display:flex;align-items:center;gap:5px;
+      font-size:11px;font-weight:700;
+      padding:4px 10px;border-radius:99px;
+      background:var(--surface);border:1px solid var(--border);color:var(--muted);
+    }
+    .q-badge .dot{width:6px;height:6px;border-radius:50%;background:currentColor;}
+    .q-badge.done{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:var(--green);}
+
+    .q-body{padding:18px 15px 15px;}
+    .q-text{
+      font-size:clamp(15px,3.5vw,18px);font-weight:700;line-height:1.45;
+      color:var(--text);margin-bottom:18px;letter-spacing:-.2px;
+    }
+
+    /* OPTIONS */
+    .opts{display:flex;flex-direction:column;gap:8px;margin-bottom:18px;}
+    .opt{
+      display:flex;align-items:flex-start;gap:11px;
+      padding:11px 13px;
+      background:var(--surface);border:1.5px solid var(--border);
+      border-radius:var(--rs);cursor:pointer;transition:all .15s;
+      position:relative;overflow:hidden;
+    }
+    .opt::after{
+      content:'';position:absolute;inset:0;
+      background:linear-gradient(90deg,rgba(249,115,22,.06),transparent);
+      opacity:0;transition:opacity .15s;
+    }
+    .opt:hover{border-color:var(--border2);transform:translateX(3px);}
+    .opt:hover::after{opacity:1;}
+    .opt.picked{border-color:var(--accent);background:rgba(249,115,22,.05);}
+    .opt.picked::after{opacity:1;}
+
+    .opt-k{
+      width:27px;height:27px;border-radius:7px;
+      display:flex;align-items:center;justify-content:center;
+      font-weight:800;font-size:12px;font-family:'JetBrains Mono',monospace;
+      background:var(--border);color:var(--muted);flex-shrink:0;
+      transition:all .15s;margin-top:1px;
+    }
+    .opt.picked .opt-k{background:var(--accent);color:#fff;}
+    .opt-t{
+      font-size:clamp(13px,3vw,15px);font-weight:500;
+      color:var(--text);line-height:1.45;flex:1;
+      padding-top:4px;word-break:break-word;
+    }
+    .opt.picked .opt-t{font-weight:600;}
+
+    /* NAV */
+    .nav-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;}
+    .nav-b{
+      padding:11px 6px;border-radius:var(--rs);
+      border:1.5px solid var(--border);background:var(--surface);
+      color:var(--muted);font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;
+      cursor:pointer;display:flex;align-items:center;justify-content:center;gap:5px;
+      transition:all .15s;white-space:nowrap;
+    }
+    .nav-b:hover{border-color:var(--border2);color:var(--text);}
+    .nav-b.nxt{background:var(--accent);border-color:var(--accent);color:#fff;}
+    .nav-b.nxt:hover{background:var(--accent2);border-color:var(--accent2);}
+    .nav-b.fin{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.35);color:var(--green);}
+    .nav-b.fin:hover{background:rgba(34,197,94,.2);}
+
+    /* NUMBER GRID */
+    .num-wrap{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);padding:13px;
+    }
+    .num-title{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px;}
+    .num-grid{display:flex;flex-wrap:wrap;gap:6px;}
+    .n-b{
+      width:33px;height:33px;border-radius:8px;
+      border:1.5px solid var(--border);background:var(--surface);
+      color:var(--muted);font-weight:700;font-size:12px;
+      font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .15s;
+      display:flex;align-items:center;justify-content:center;
+    }
+    .n-b:hover{border-color:var(--accent);color:var(--accent);}
+    .n-b.cur{background:var(--accent);border-color:var(--accent);color:#fff;transform:scale(1.07);}
+    .n-b.ans{background:rgba(34,197,94,.1);border-color:rgba(34,197,94,.3);color:var(--green);}
+    .n-b.cur.ans{background:var(--green);border-color:var(--green);color:#fff;}
+    .num-legend{display:flex;gap:14px;margin-top:10px;flex-wrap:wrap;}
+    .leg{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);font-weight:600;}
+    .leg-d{width:10px;height:10px;border-radius:3px;}
+    .leg-d.cur{background:var(--accent);}
+    .leg-d.ans{background:var(--green);}
+    .leg-d.emp{background:var(--border);}
+
+    /* RESULT */
+    #resultBox{
+      background:var(--card);border:1px solid var(--border);
+      border-radius:var(--r);overflow:hidden;animation:fup .4s ease both;
+    }
+    .res-head{padding:24px 20px 18px;text-align:center;border-bottom:1px solid var(--border);}
+    .res-ic{font-size:42px;display:block;margin-bottom:10px;}
+    .res-head h2{font-size:clamp(19px,5vw,25px);font-weight:900;letter-spacing:-.4px;}
+    .res-body{padding:18px;}
+    .sc-row{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;margin-bottom:18px;}
+    .sc-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:14px 8px;text-align:center;}
+    .sc-v{font-size:30px;font-weight:900;font-family:'JetBrains Mono',monospace;}
+    .sc-box.ok .sc-v{color:var(--green);}
+    .sc-box.no .sc-v{color:var(--red);}
+    .sc-box.pc .sc-v{color:var(--accent);}
+    .sc-l{font-size:10px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;margin-top:4px;}
+    .grade{padding:11px 15px;border-radius:var(--rs);font-size:14px;font-weight:700;text-align:center;margin-bottom:18px;}
+    .res-acts{display:grid;grid-template-columns:1fr 1fr;gap:9px;}
+    .res-btn{
+      padding:13px;border-radius:var(--rs);font-family:'Outfit',sans-serif;
+      font-size:14px;font-weight:700;cursor:pointer;border:none;
+      transition:all .15s;display:flex;align-items:center;justify-content:center;gap:7px;
+    }
+    .res-btn.pri{background:var(--accent);color:#fff;box-shadow:0 4px 18px rgba(249,115,22,.3);}
+    .res-btn.pri:hover{background:var(--accent2);}
+    .res-btn.sec{background:var(--surface);border:1.5px solid var(--border);color:var(--muted);}
+    .res-btn.sec:hover{color:var(--text);border-color:var(--border2);}
+
+    .hidden{display:none!important;}
+    @keyframes fup{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
+    footer{text-align:center;margin-top:22px;font-size:11px;color:var(--muted);}
+
+    /* ── MOBILE ── */
+    @media(max-width:480px){
+      body{padding:10px 10px 28px;}
+      .stats-row{grid-template-columns:1fr 1fr;}
+      .s-box.tbox{grid-column:1/-1;}
+      .q-body{padding:15px 12px 13px;}
+      .q-head{padding:10px 12px;}
+      .opt{padding:10px 11px;gap:9px;}
+      .opt-k{width:25px;height:25px;font-size:11px;border-radius:6px;}
+      .opt-t{font-size:13px;}
+      .nav-b{font-size:12px;padding:10px 5px;gap:4px;}
+      .n-b{width:31px;height:31px;font-size:11px;}
+      .sc-v{font-size:25px;}
+      .res-acts{grid-template-columns:1fr;}
+    }
+    @media(max-width:340px){
+      .nav-b span{display:none;}
+      .n-b{width:28px;height:28px;}
+    }
+  </style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="logo-mark"><i class="fas fa-bolt"></i></div>
+    <div class="logo-text">Quiz<span>Master</span></div>
+  </div>
+
+  <!-- ══ INTRO ══ -->
+  <div id="introPage">
+    <div class="intro-card">
+      <div class="hero-ic"><i class="fas fa-laptop-code"></i></div>
+      <h1>Ujian <em>Web Dev</em></h1>
+      <p class="intro-sub">20 soal pilihan ganda · 5 topik · 30 menit</p>
+      <div class="info-grid">
+        <div class="info-box"><div class="val">20</div><div class="lbl">Soal</div></div>
+        <div class="info-box"><div class="val">30</div><div class="lbl">Menit</div></div>
+        <div class="info-box"><div class="val">5</div><div class="lbl">Topik</div></div>
+      </div>
+      <div class="tags">
+        <span class="tag"><i class="fab fa-html5"></i> HTML</span>
+        <span class="tag"><i class="fab fa-css3-alt"></i> CSS</span>
+        <span class="tag"><i class="fab fa-js"></i> JavaScript</span>
+        <span class="tag"><i class="fas fa-database"></i> Database</span>
+        <span class="tag"><i class="fab fa-php"></i> PHP</span>
+      </div>
+      <button class="btn-start" id="startBtn"><i class="fas fa-play"></i> Mulai Ujian Sekarang</button>
+    </div>
+    <p class="intro-note"><i class="fas fa-info-circle"></i> &nbsp;Jawaban otomatis dikumpulkan jika waktu habis</p>
+  </div>
+
+  <!-- ══ QUIZ ══ -->
+  <div id="quizPage" class="quiz-wrap">
+
+    <div class="stats-row">
+      <div class="s-box">
+        <div class="s-ic g"><i class="fas fa-check"></i></div>
+        <div><div class="s-val" id="cA">0</div><div class="s-lbl">Terjawab</div></div>
+      </div>
+      <div class="s-box">
+        <div class="s-ic y"><i class="fas fa-minus"></i></div>
+        <div><div class="s-val" id="cR">20</div><div class="s-lbl">Sisa Soal</div></div>
+      </div>
+      <div class="s-box tbox" id="tbox">
+        <div class="s-ic r"><i class="fas fa-clock"></i></div>
+        <div><div class="s-val" id="tVal">30:00</div><div class="s-lbl">Waktu</div></div>
+      </div>
+    </div>
+
+    <div class="prog-row">
+      <div class="prog-lbl">Progress</div>
+      <div class="prog-track"><div class="prog-fill" id="pFill"></div></div>
+      <div class="prog-pct" id="pPct">0%</div>
+    </div>
+
+    <div class="q-card" id="qCard">
+      <div class="q-head">
+        <div class="q-num">Soal <strong id="curN">1</strong> / <span id="totN">20</span></div>
+        <div class="q-badge" id="qBadge"><div class="dot"></div> Belum dijawab</div>
+      </div>
+      <div class="q-body">
+        <div class="q-text" id="qTxt">Memuat...</div>
+        <div class="opts" id="opts"></div>
+        <div class="nav-row">
+          <button class="nav-b prv" id="btnPrev"><i class="fas fa-arrow-left"></i> <span>Prev</span></button>
+          <button class="nav-b nxt" id="btnNext"><span>Next</span> <i class="fas fa-arrow-right"></i></button>
+          <button class="nav-b fin" id="btnSub"><i class="fas fa-flag"></i> <span>Selesai</span></button>
+        </div>
+      </div>
+    </div>
+
+    <div class="num-wrap">
+      <div class="num-title">Navigasi Soal</div>
+      <div class="num-grid" id="numGrid"></div>
+      <div class="num-legend">
+        <div class="leg"><div class="leg-d cur"></div>Sedang dikerjakan</div>
+        <div class="leg"><div class="leg-d ans"></div>Sudah dijawab</div>
+        <div class="leg"><div class="leg-d emp"></div>Belum dijawab</div>
+      </div>
+    </div>
+
+    <div id="resultBox" class="hidden"></div>
+  </div>
+
+  <footer><i class="fas fa-bolt" style="color:var(--accent)"></i> &nbsp;QuizMaster · Web Development</footer>
+</div>
+
+<script>
+const QS=[
+  {q:"Apa fungsi utama HTML dalam web?",o:["Mengatur database","Membuat struktur halaman web","Membuat animasi","Mengatur server"],c:1},
+  {q:"Tag untuk membuat paragraf adalah …",o:["&lt;p&gt;","&lt;h1&gt;","&lt;br&gt;","&lt;text&gt;"],c:0},
+  {q:"Tag untuk memasukkan gambar adalah …",o:["&lt;img&gt;","&lt;td&gt;","&lt;pic&gt;","&lt;src&gt;"],c:0},
+  {q:"Atribut untuk link di HTML adalah …",o:["src","href","link","url"],c:1},
+  {q:"Tag untuk membuat tabel adalah …",o:["&lt;table&gt;","&lt;grid&gt;","&lt;tab&gt;","&lt;tdonly&gt;"],c:0},
+  {q:"CSS digunakan untuk …",o:["Struktur web","Styling tampilan web","Database","Server"],c:1},
+  {q:"Properti untuk mengubah warna teks adalah …",o:["text-color","font-color","color","background-color"],c:2},
+  {q:"CSS internal ditulis di dalam …",o:["&lt;style&gt;","&lt;css&gt;","&lt;script&gt;","&lt;design&gt;"],c:0},
+  {q:"Flexbox digunakan untuk …",o:["Database","Layouting","Server","Animasi game"],c:1},
+  {q:"Properti untuk jarak luar elemen adalah …",o:["padding","margin","spacing","border"],c:1},
+  {q:"JavaScript digunakan untuk …",o:["Styling","Interaksi web","Database","Server OS"],c:1},
+  {q:"Keyword variabel di JavaScript adalah …",o:["var / let / const","int / float","define","variable"],c:0},
+  {q:"Fungsi alert() digunakan untuk …",o:["Menyimpan data","Menampilkan popup","Menghapus data","Database"],c:1},
+  {q:"Operator identik (strict equality) di JavaScript adalah …",o:["=","==","===","!="],c:2},
+  {q:"Bahasa query database adalah …",o:["HTML","SQL","CSS","JavaScript"],c:1},
+  {q:"Perintah mengambil data di SQL adalah …",o:["GET","SELECT","FIND","OPEN"],c:1},
+  {q:"Primary key berfungsi untuk …",o:["Styling halaman","Identitas unik data","Menghapus database","Koneksi internet"],c:1},
+  {q:"PHP adalah bahasa pemrograman untuk …",o:["Frontend","Backend","UI design","Game"],c:1},
+  {q:"Cara penulisan tag PHP yang benar adalah …",o:["&lt;php&gt; ... &lt;/php&gt;","&lt;?php ... ?&gt;","&lt;script php&gt;","{ php }"],c:1},
+  {q:"Fungsi echo di PHP digunakan untuk …",o:["Input data","Menampilkan output ke layar","Menghapus file","Query database"],c:1}
+];
+
+const L=['A','B','C','D'];
+let ans=new Array(QS.length).fill(null),idx=0,done=false,tLeft=1800,tmr=null;
+
+const $ = id => document.getElementById(id);
+const introPg=$('introPage'),quizPg=$('quizPage'),qCard=$('qCard'),resBox=$('resultBox');
+const tbox=$('tbox'),tVal=$('tVal'),cA=$('cA'),cR=$('cR');
+const pFill=$('pFill'),pPct=$('pPct'),curN=$('curN'),totN=$('totN'),qBadge=$('qBadge');
+const qTxt=$('qTxt'),opts=$('opts'),numGrid=$('numGrid');
+totN.textContent=QS.length;
+
+function tick(){
+  if(done||tLeft<=0)return;
+  tLeft--;
+  tVal.textContent=`${String(Math.floor(tLeft/60)).padStart(2,'0')}:${String(tLeft%60).padStart(2,'0')}`;
+  tbox.classList.toggle('tpulse',tLeft<=300);
+  if(tLeft===0){clearInterval(tmr);alert('⏰ Waktu habis!');submit(true);}
+}
+function startTmr(){clearInterval(tmr);tmr=setInterval(tick,1000);}
+function stopTmr(){clearInterval(tmr);}
+
+function refreshStats(){
+  const n=ans.filter(a=>a!==null).length;
+  cA.textContent=n; cR.textContent=QS.length-n;
+  const p=Math.round(n/QS.length*100);
+  pFill.style.width=p+'%'; pPct.textContent=p+'%';
+  document.querySelectorAll('.n-b').forEach((b,i)=>{
+    b.className='n-b';
+    if(ans[i]!==null)b.classList.add('ans');
+    if(i===idx)b.classList.add('cur');
+  });
+}
+
+function render(){
+  if(done)return;
+  const q=QS[idx];
+  qTxt.innerHTML=`${idx+1}. ${q.q}`;
+  curN.textContent=idx+1;
+  const p=ans[idx];
+  qBadge.className='q-badge'+(p!==null?' done':'');
+  qBadge.innerHTML=`<div class="dot"></div>${p!==null?'Sudah dijawab':'Belum dijawab'}`;
+  opts.innerHTML='';
+  q.o.forEach((o,i)=>{
+    const d=document.createElement('div');
+    d.className='opt'+(p===i?' picked':'');
+    d.innerHTML=`<div class="opt-k">${L[i]}</div><div class="opt-t">${o}</div>`;
+    d.onclick=()=>{if(done)return;ans[idx]=i;refreshStats();render();};
+    opts.appendChild(d);
+  });
+  refreshStats();
+}
+
+function buildGrid(){
+  numGrid.innerHTML='';
+  QS.forEach((_,i)=>{
+    const b=document.createElement('button');
+    b.className='n-b'+(ans[i]!==null?' ans':'')+(i===idx?' cur':'');
+    b.textContent=i+1;
+    b.onclick=()=>{if(!done){idx=i;render();buildGrid();}};
+    numGrid.appendChild(b);
+  });
+}
+
+$('btnPrev').onclick=()=>{if(!done&&idx>0){idx--;render();buildGrid();}};
+$('btnNext').onclick=()=>{
+  if(!done&&idx<QS.length-1){idx++;render();buildGrid();}
+  else if(idx===QS.length-1)alert('✨ Ini soal terakhir. Tekan Selesai!');
+};
+$('btnSub').onclick=()=>submit(false);
+
+function submit(forced){
+  if(done)return;
+  stopTmr();
+  const skip=ans.reduce((a,v,i)=>v===null?[...a,i+1]:a,[]);
+  if(skip.length&&!forced){
+    if(!confirm(`⚠️ ${skip.length} soal belum dijawab (no. ${skip.join(', ')}).\nTetap kumpulkan?`)){startTmr();return;}
+  }
+  done=true;
+  let ok=0;
+  QS.forEach((q,i)=>{if(ans[i]===q.c)ok++;});
+  const bad=QS.length-ok,pct=Math.round(ok/QS.length*100);
+  let em,msg,clr;
+  if(pct>=85){em='🏆';msg='Luar biasa! Pertahankan prestasimu!';clr='#22C55E';}
+  else if(pct>=70){em='👍';msg='Bagus! Terus tingkatkan belajarmu.';clr='#22D3EE';}
+  else if(pct>=50){em='📚';msg='Cukup baik. Pelajari lagi materinya!';clr='#EAB308';}
+  else{em='💪';msg='Jangan menyerah! Belajar lagi, ya.';clr='#EF4444';}
+  resBox.innerHTML=`
+    <div class="res-head">
+      <span class="res-ic">${em}</span>
+      <h2>Hasil Ujian Web Dev</h2>
+      ${forced?'<p style="color:var(--red);font-size:12px;margin-top:6px"><i class="fas fa-clock"></i> Waktu habis — dikumpulkan otomatis</p>':''}
+    </div>
+    <div class="res-body">
+      <div class="sc-row">
+        <div class="sc-box ok"><div class="sc-v">${ok}</div><div class="sc-l">✔ Benar</div></div>
+        <div class="sc-box no"><div class="sc-v">${bad}</div><div class="sc-l">✘ Salah</div></div>
+        <div class="sc-box pc"><div class="sc-v">${pct}%</div><div class="sc-l">★ Nilai</div></div>
+      </div>
+      <div class="grade" style="background:${clr}15;border:1px solid ${clr}35;color:${clr}">${msg}</div>
+      <div class="res-acts">
+        <button class="res-btn pri" id="bRst"><i class="fas fa-sync-alt"></i> Ulangi Ujian</button>
+        <button class="res-btn sec" id="bHome"><i class="fas fa-home"></i> Beranda</button>
+      </div>
+    </div>`;
+  qCard.classList.add('hidden');
+  resBox.classList.remove('hidden');
+  $('bRst').onclick=reset;
+  $('bHome').onclick=goHome;
+}
+
+function reset(){
+  ans=new Array(QS.length).fill(null);idx=0;done=false;tLeft=1800;
+  tVal.textContent='30:00';tbox.classList.remove('tpulse');
+  qCard.classList.remove('hidden');resBox.classList.add('hidden');
+  render();buildGrid();refreshStats();startTmr();
+}
+function goHome(){
+  stopTmr();
+  ans=new Array(QS.length).fill(null);idx=0;done=false;tLeft=1800;
+  tVal.textContent='30:00';tbox.classList.remove('tpulse');
+  qCard.classList.remove('hidden');resBox.classList.add('hidden');
+  quizPg.classList.remove('on');introPg.style.display='block';
+  render();buildGrid();refreshStats();
+}
+
+$('startBtn').onclick=()=>{
+  introPg.style.display='none';
+  quizPg.classList.add('on');
+  reset();
+};
+
+render();buildGrid();refreshStats();
+</script>
+</body>
+</html>
