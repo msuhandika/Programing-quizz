@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>QuizMaster — Web Dev</title>
-  <link rel="icon" type="image/png" href="favicon.png?v=1">
+  <title>QuizMaster — HTML CSS PHP</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -308,18 +307,16 @@
   <div id="introPage">
     <div class="intro-card">
       <div class="hero-ic"><i class="fas fa-laptop-code"></i></div>
-      <h1>Ujian <em>Web Dev</em></h1>
-      <p class="intro-sub">20 soal pilihan ganda · 5 topik · 30 menit</p>
+      <h1>Ujian <em>Web Dasar</em></h1>
+      <p class="intro-sub">20 soal pilihan ganda · 3 topik · 30 menit</p>
       <div class="info-grid">
         <div class="info-box"><div class="val">20</div><div class="lbl">Soal</div></div>
         <div class="info-box"><div class="val">30</div><div class="lbl">Menit</div></div>
-        <div class="info-box"><div class="val">5</div><div class="lbl">Topik</div></div>
+        <div class="info-box"><div class="val">3</div><div class="lbl">Topik</div></div>
       </div>
       <div class="tags">
         <span class="tag"><i class="fab fa-html5"></i> HTML</span>
         <span class="tag"><i class="fab fa-css3-alt"></i> CSS</span>
-        <span class="tag"><i class="fab fa-js"></i> JavaScript</span>
-        <span class="tag"><i class="fas fa-database"></i> Database</span>
         <span class="tag"><i class="fab fa-php"></i> PHP</span>
       </div>
       <button class="btn-start" id="startBtn"><i class="fas fa-play"></i> Mulai Ujian Sekarang</button>
@@ -380,31 +377,36 @@
     <div id="resultBox" class="hidden"></div>
   </div>
 
-  <footer><i class="fas fa-bolt" style="color:var(--accent)"></i> &nbsp;QuizMaster · Web Development</footer>
+  <footer><i class="fas fa-bolt" style="color:var(--accent)"></i> &nbsp;QuizMaster · HTML CSS PHP Dasar</footer>
 </div>
 
 <script>
 const QS=[
-  {q:"Apa fungsi utama HTML dalam web?",o:["Mengatur database","Membuat struktur halaman web","Membuat animasi","Mengatur server"],c:1},
-  {q:"Tag untuk membuat paragraf adalah …",o:["&lt;p&gt;","&lt;h1&gt;","&lt;br&gt;","&lt;text&gt;"],c:0},
-  {q:"Tag untuk memasukkan gambar adalah …",o:["&lt;img&gt;","&lt;td&gt;","&lt;pic&gt;","&lt;src&gt;"],c:0},
-  {q:"Atribut untuk link di HTML adalah …",o:["src","href","link","url"],c:1},
-  {q:"Tag untuk membuat tabel adalah …",o:["&lt;table&gt;","&lt;grid&gt;","&lt;tab&gt;","&lt;tdonly&gt;"],c:0},
-  {q:"CSS digunakan untuk …",o:["Struktur web","Styling tampilan web","Database","Server"],c:1},
-  {q:"Properti untuk mengubah warna teks adalah …",o:["text-color","font-color","color","background-color"],c:2},
-  {q:"CSS internal ditulis di dalam …",o:["&lt;style&gt;","&lt;css&gt;","&lt;script&gt;","&lt;design&gt;"],c:0},
-  {q:"Flexbox digunakan untuk …",o:["Database","Layouting","Server","Animasi game"],c:1},
-  {q:"Properti untuk jarak luar elemen adalah …",o:["padding","margin","spacing","border"],c:1},
-  {q:"JavaScript digunakan untuk …",o:["Styling","Interaksi web","Database","Server OS"],c:1},
-  {q:"Keyword variabel di JavaScript adalah …",o:["var / let / const","int / float","define","variable"],c:0},
-  {q:"Fungsi alert() digunakan untuk …",o:["Menyimpan data","Menampilkan popup","Menghapus data","Database"],c:1},
-  {q:"Operator identik (strict equality) di JavaScript adalah …",o:["=","==","===","!="],c:2},
-  {q:"Bahasa query database adalah …",o:["HTML","SQL","CSS","JavaScript"],c:1},
-  {q:"Perintah mengambil data di SQL adalah …",o:["GET","SELECT","FIND","OPEN"],c:1},
-  {q:"Primary key berfungsi untuk …",o:["Styling halaman","Identitas unik data","Menghapus database","Koneksi internet"],c:1},
-  {q:"PHP adalah bahasa pemrograman untuk …",o:["Frontend","Backend","UI design","Game"],c:1},
-  {q:"Cara penulisan tag PHP yang benar adalah …",o:["&lt;php&gt; ... &lt;/php&gt;","&lt;?php ... ?&gt;","&lt;script php&gt;","{ php }"],c:1},
-  {q:"Fungsi echo di PHP digunakan untuk …",o:["Input data","Menampilkan output ke layar","Menghapus file","Query database"],c:1}
+  // ── HTML (7 soal) ──
+  {q:"Kepanjangan dari HTML adalah …",o:["HyperText Markup Language","HighText Machine Language","HyperTransfer Markup Language","Hyperlink Text Markup Language"],c:0},
+  {q:"Tag yang digunakan untuk membuat judul terbesar di HTML adalah …",o:["&lt;h6&gt;","&lt;title&gt;","&lt;h1&gt;","&lt;head&gt;"],c:2},
+  {q:"Tag yang digunakan untuk membuat tautan (link) adalah …",o:["&lt;a&gt;","&lt;link&gt;","&lt;href&gt;","&lt;nav&gt;"],c:0},
+  {q:"Atribut yang menyimpan alamat tujuan pada tag &lt;a&gt; adalah …",o:["src","href","link","target"],c:1},
+  {q:"Tag untuk menampilkan gambar di HTML adalah …",o:["&lt;picture&gt;","&lt;src&gt;","&lt;img&gt;","&lt;image&gt;"],c:2},
+  {q:"Pasangan tag yang benar untuk membuat daftar tidak berurut adalah …",o:["&lt;ol&gt; dan &lt;li&gt;","&lt;ul&gt; dan &lt;li&gt;","&lt;list&gt; dan &lt;item&gt;","&lt;dl&gt; dan &lt;dt&gt;"],c:1},
+  {q:"Tag yang digunakan sebagai wadah baris dalam sebuah tabel adalah …",o:["&lt;td&gt;","&lt;th&gt;","&lt;tr&gt;","&lt;table&gt;"],c:2},
+
+  // ── CSS (7 soal) ──
+  {q:"CSS singkatan dari …",o:["Creative Style Sheets","Cascading Style Sheets","Computer Style Sheets","Colorful Style Sheets"],c:1},
+  {q:"Cara penulisan CSS yang langsung ditulis di dalam file HTML menggunakan tag &lt;style&gt; disebut …",o:["Inline CSS","External CSS","Internal CSS","Embedded CSS"],c:2},
+  {q:"Properti CSS untuk mengubah warna teks adalah …",o:["text-color","font-color","color","background"],c:2},
+  {q:"Properti CSS untuk mengatur jarak di dalam elemen (antara konten dan border) adalah …",o:["margin","spacing","border","padding"],c:3},
+  {q:"Selector CSS yang menarget semua elemen dengan class 'kotak' adalah …",o:["#kotak","kotak","*kotak",".kotak"],c:3},
+  {q:"Properti CSS yang digunakan untuk membuat teks menjadi tebal adalah …",o:["text-weight","font-bold","font-weight","text-bold"],c:2},
+  {q:"Nilai properti display yang membuat elemen tampil sejajar dan bisa diatur lebar-tingginya adalah …",o:["inline","block","inline-block","flex"],c:2},
+
+  // ── PHP (6 soal) ──
+  {q:"Tag pembuka dan penutup PHP yang benar adalah …",o:["&lt;php&gt; ... &lt;/php&gt;","&lt;?php ... ?&gt;","{ php ... }","&lt;script php&gt; ... &lt;/script&gt;"],c:1},
+  {q:"Fungsi di PHP yang digunakan untuk menampilkan teks ke layar adalah …",o:["print_text()","display()","echo","show()"],c:2},
+  {q:"Cara yang benar untuk mendeklarasikan variabel di PHP adalah …",o:["var nama = 'Budi';","$nama = 'Budi';","let nama = 'Budi';","nama = 'Budi';"],c:1},
+  {q:"Simbol yang digunakan untuk memulai nama variabel di PHP adalah …",o:["@","#","&","$"],c:3},
+  {q:"Operator penggabungan string (concatenation) di PHP adalah …",o:["+","&",".","::"],c:2},
+  {q:"Pernyataan kondisional dasar di PHP yang digunakan untuk memeriksa suatu kondisi adalah …",o:["loop","switch","if","while"],c:2}
 ];
 
 const L=['A','B','C','D'];
@@ -495,7 +497,7 @@ function submit(forced){
   resBox.innerHTML=`
     <div class="res-head">
       <span class="res-ic">${em}</span>
-      <h2>Hasil Ujian Web Dev</h2>
+      <h2>Hasil Ujian Web Dasar</h2>
       ${forced?'<p style="color:var(--red);font-size:12px;margin-top:6px"><i class="fas fa-clock"></i> Waktu habis — dikumpulkan otomatis</p>':''}
     </div>
     <div class="res-body">
