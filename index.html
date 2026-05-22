@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-  <title>Pogramingquizz — HTML CSS PHP</title>
+  <title>QuizMaster — HTML CSS PHP</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -29,7 +29,7 @@
     body{
       font-family:'Outfit',sans-serif;
       background:var(--bg);color:var(--text);
-      min-height:100vh;padding:14px 14px 36px;
+      min-height:100vh;padding:14px 14px 36px;display:flex;flex-direction:column;align-items:stretch;
     }
     body::before{
       content:'';position:fixed;inset:0;
@@ -39,7 +39,7 @@
       background-size:40px 40px;
       pointer-events:none;z-index:0;
     }
-    .wrap{max-width:620px;margin:0 auto;position:relative;z-index:1;}
+    .wrap{max-width:620px;width:100%;margin:0 auto;position:relative;z-index:1;}.wrap.centered{display:flex;flex-direction:column;min-height:calc(100vh - 50px);justify-content:center;}
 
     /* ── TOP BAR ── */
     .topbar{display:flex;align-items:center;gap:10px;margin-bottom:18px;}
@@ -271,7 +271,7 @@
 
     .hidden{display:none!important;}
     @keyframes fup{from{opacity:0;transform:translateY(14px);}to{opacity:1;transform:translateY(0);}}
-    footer{text-align:center;margin-top:22px;font-size:11px;color:var(--muted);}
+    footer{text-align:center;margin-top:26px;padding-bottom:10px;font-size:11px;color:var(--muted);}
 
     /* ── MOBILE ── */
     @media(max-width:480px){
@@ -295,12 +295,12 @@
   </style>
 </head>
 <body>
-<div class="wrap">
+<div class="wrap centered" id="mainWrap">
 
   <!-- TOP BAR -->
   <div class="topbar">
     <div class="logo-mark"><i class="fas fa-bolt"></i></div>
-    <div class="logo-text">Programing<span>Qizz</span></div>
+    <div class="logo-text">Quiz<span>Master</span></div>
   </div>
 
   <!-- ══ INTRO ══ -->
@@ -377,8 +377,19 @@
     <div id="resultBox" class="hidden"></div>
   </div>
 
-  <footer><i class="fas fa-bolt" style="color:var(--accent)"></i> &nbsp;Programing Quizz · HTML CSS PHP Dasar <br> Develover: M SuhanDika 11RPL1</footer>
-</div>
+  <footer>
+    <i class="fas fa-bolt" style="color:var(--accent)"></i> &nbsp;QuizMaster · HTML CSS PHP Dasar
+    <div style="margin-top:10px;display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;">
+      <span style="display:inline-flex;align-items:center;gap:7px;background:#18181F;border:1px solid #26262E;border-radius:99px;padding:6px 16px;font-size:12px;font-weight:700;color:#F0F0F5;">
+        <i class="fas fa-code" style="color:var(--accent);font-size:11px;"></i>
+        Developer &nbsp;·&nbsp; <span style="color:var(--accent)">M SUHAN DIKA</span>
+      </span>
+      <span style="display:inline-flex;align-items:center;gap:7px;background:#18181F;border:1px solid #26262E;border-radius:99px;padding:6px 16px;font-size:12px;font-weight:700;color:#F0F0F5;">
+        <i class="fas fa-graduation-cap" style="color:var(--accent);font-size:11px;"></i>
+        <span style="color:var(--accent)">Kelas 11 RPL 1</span>
+      </span>
+    </div>
+  </footer>
 
 <script>
 const QS=[
@@ -529,11 +540,12 @@ function goHome(){
   ans=new Array(QS.length).fill(null);idx=0;done=false;tLeft=1800;
   tVal.textContent='30:00';tbox.classList.remove('tpulse');
   qCard.classList.remove('hidden');resBox.classList.add('hidden');
-  quizPg.classList.remove('on');introPg.style.display='block';
+  quizPg.classList.remove('on');introPg.style.display='block';document.getElementById('mainWrap').classList.add('centered');
   render();buildGrid();refreshStats();
 }
 
 $('startBtn').onclick=()=>{
+  document.getElementById('mainWrap').classList.remove('centered');
   introPg.style.display='none';
   quizPg.classList.add('on');
   reset();
